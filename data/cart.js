@@ -1,3 +1,8 @@
+import { renderOrderSummary } from '../scripts/checkout/orderSummary.js';
+import { renderPaymentSummary } from '../scripts/checkout/paymentSummary.js';
+
+
+
 export let cart = JSON.parse(localStorage.getItem('cart'));
 
 if (!cart) {
@@ -64,3 +69,78 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
     saveToStorage();
 
 }
+
+
+export function updateQuantity(productId, newQuantity) {
+  let matchingItem;
+
+  cart.forEach((cartItem) => {
+    if (productId === cartItem.productId) {
+      matchingItem = cartItem;
+    }
+  });
+
+  matchingItem.quantity = newQuantity;
+
+  saveToStorage(); }
+
+  export function updateCart() {
+    document.querySelectorAll('.js-update-link')
+      .forEach((link) => {
+        link.addEventListener('click', () => {
+          const productId = link.dataset.productId;
+          const container = document.querySelector(
+            `.js-cart-item-container-${productId}`
+          );
+          container.classList.add('is-editing-quantity');
+        });
+      });
+  }
+
+  export function saveUpdateCart() {
+    document.querySelectorAll('.js-save-link')
+    .forEach((link) => {
+      link.addEventListener('click', () => {
+        const productId = link.dataset.productId;
+
+        const quantityInput = document.querySelector(
+          `.js-quantity-input-${productId}`
+        );
+
+        const newQuantity = Number(quantityInput.value);
+
+        if (newQuantity < 0 || newQuantity >= 1000) {
+          alert('Quantity must be at least 0 and less than 1000');
+          return;
+        }
+
+        updateQuantity(productId, newQuantity);
+
+        const container = document.querySelector(
+          `.js-cart-item-container-${productId}`
+        );
+        container.classList.remove('is-editing-quantity');
+
+
+        const quantityLabel = document.querySelector(
+          `.js-quantity-label-${productId}`
+        );
+        quantityLabel.innerHTML = newQuantity;
+
+        updateCartQuantity();
+        renderOrderSummary();
+        renderPaymentSummary();
+      });
+    });
+  }
+
+  export function updateCartQuantity() {
+    let cartQuantity = 0;
+
+    cart.forEach((cartItem) => {
+      cartQuantity += cartItem.quantity;
+    });
+
+    document.querySelector('.js-return-to-home-link')
+      .innerHTML = `${cartQuantity} items`;
+  }

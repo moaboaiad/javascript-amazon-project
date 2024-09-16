@@ -1,4 +1,4 @@
-import { cart, removeFromCart, updateDeliveryOption } from '../../data/cart.js';
+import { cart, removeFromCart, updateDeliveryOption, updateQuantity, saveUpdateCart, updateCart, updateCartQuantity } from '../../data/cart.js';
 import { products, getProduct } from '../../data/products.js';
 import formatCurrency from '../utils/money.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js'
@@ -41,11 +41,16 @@ export function renderOrderSummary() {
           </div>
           <div class="product-quantity">
             <span>
-              Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+              Quantity: <span class="quantity-label js-quantity-label-${matchingProduct.id}">${cartItem.quantity}</span>
             </span>
             <span class="update-quantity-link link-primary js-update-link"
               data-product-id="${matchingProduct.id}">
               Update
+            </span>
+             <input class="quantity-input js-quantity-input-${matchingProduct.id}">
+            <span class="save-quantity-link link-primary js-save-link"
+              data-product-id="${matchingProduct.id}">
+              Save
             </span>
             <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
               Delete
@@ -109,28 +114,11 @@ export function renderOrderSummary() {
       updateCartQuantity();
       renderPaymentSummary();
       });
-  })
-
-
-  function updateCartQuantity() {
-    let cartQuantity = 0;
-
-    cart.forEach((cartItem) => {
-      cartQuantity += cartItem.quantity;
-    });
-
-    document.querySelector('.js-return-to-home-link')
-      .innerHTML = `${cartQuantity} items`;
-  }
-  updateCartQuantity();
-
-  document.querySelectorAll('.js-update-link')
-  .forEach((link) => {
-    link.addEventListener('click', () => {
-      const productId = link.dataset.productId;
-      console.log(productId);
-    });
   });
+
+  updateCartQuantity();
+  saveUpdateCart();
+  updateCart();
 
   document.querySelectorAll('.js-delivery-option')
     .forEach((element) => {
