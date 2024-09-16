@@ -25,7 +25,7 @@ export function renderPaymentSummary() {
     </div>
 
     <div class="payment-summary-row">
-      <div class="js-item--quantity-summary"></div>
+      <div class="js-item-quantity-summary"></div>
       <div class="payment-summary-money">$${formatCurrency(productPriceCents)}</div>
     </div>
 
@@ -63,7 +63,7 @@ export function renderPaymentSummary() {
       cartQuantity += cartItem.quantity;
     });
 
-    document.querySelector('.js-item--quantity-summary')
+    document.querySelector('.js-item-quantity-summary')
       .innerHTML = `Items (${cartQuantity}):`;
   }
 
